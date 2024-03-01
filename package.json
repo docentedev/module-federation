@@ -6,8 +6,12 @@
       "start-alert-host": "npm run start --prefix alert-host",
       "build-alert-host": "npm run build --prefix alert-host",
       "start-alert-app": "npm run start --prefix alert-app",
-      "build-alert-app": "npm run build --prefix alert-app"
+      "build-alert-app": "npm run build --prefix alert-app",
+      "start-delivery-host": "npm run start --prefix delivery-host",
+      "build-delivery-host": "npm run build --prefix delivery-host",
+      "start-delivery_routes": "npm run start --prefix delivery_routes",
+      "build-delivery_routes": "npm run build --prefix delivery_routes"
     },
     "private": true,
-    "workspaces": ["host", "alert-host", "alert-app"]
+    "workspaces": ["host", "alert-host", "alert-app", "delivery-host", "delivery_routes"]
   }

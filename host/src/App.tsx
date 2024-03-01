@@ -1,12 +1,19 @@
-import React, { Suspense, lazy } from 'react'
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react'
+import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import ReactDOM from 'react-dom/client'
 
 const AlertHost = lazy(() => import('alert_host/App'));
+const DeliveyHost = lazy(() => import('delivery_host/App'));
 
 const WrapperSuspense = () => (
   <Suspense fallback={<div>Cargando...</div>}>
     <AlertHost />
+  </Suspense>
+)
+
+const WrapperDelSuspense = () => (
+  <Suspense fallback={<div>Cargando...</div>}>
+    <DeliveyHost />
   </Suspense>
 )
 
@@ -25,6 +32,7 @@ const Header = () => {
         <button className="btn btn-primary" onClick={() => navigate('/alert/app/section1')}>Sección 1</button>
         <button className="btn btn-primary" onClick={() => navigate('/alert/app/section2')}>Sección 2</button>
         <button className="btn btn-primary" onClick={() => navigate('/contact')}>Contact</button>
+        <button className="btn btn-primary" onClick={() => navigate('/delivery/routes')}>Routes</button>
       </div>
     </div>
   )
@@ -45,6 +53,50 @@ const Index = () => {
   )
 }
 
+const sendEvent = (location?: any) => {
+  console.log('SEND -> location', location);
+  // dispatch a new custom with a callback and clear event called CHANGE_ROUTE
+  const event = new CustomEvent('CHANGE_ROUTE', {
+    detail: {
+      datetime: new Date().toISOString(),
+      path: location?.pathname,
+    }
+  });
+  window.dispatchEvent(event);
+}
+
+const MainRoute = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    sendEvent(location)
+  }, [location]);
+
+ // listen a APP_READY event
+  useEffect(() => {
+    const listener = (e: any) => {
+      console.log('APP READY', e);
+      sendEvent(location);
+    }
+    window.addEventListener('APP_READY', listener);
+    return () => {
+      window.removeEventListener('APP_READY', listener);
+    }
+  });
+
+  return (
+    <div>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/delivery/*" element={<WrapperDelSuspense />} />
+        <Route path="/alert/*" element={<WrapperSuspense />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </div>
+  )
+}
+
 const App = () => (
   <div className="container">
     <div className="card">
@@ -54,12 +106,7 @@ const App = () => (
       </div>
     </div>
     <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/alert/*" element={<WrapperSuspense />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
+      <MainRoute />
     </Router>
   </div>
 )

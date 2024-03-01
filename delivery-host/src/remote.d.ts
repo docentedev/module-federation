@@ -1,0 +1,1 @@
+declare module 'delivery_routes/App'
