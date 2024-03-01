@@ -1,0 +1,13 @@
+{
+    "name": "main-app",
+    "scripts": {
+      "start": "npm run start --prefix host",
+      "build": "npm run build --prefix host",
+      "start-alert-host": "npm run start --prefix alert-host",
+      "build-alert-host": "npm run build --prefix alert-host",
+      "start-alert-app": "npm run start --prefix alert-app",
+      "build-alert-app": "npm run build --prefix alert-app"
+    },
+    "private": true,
+    "workspaces": ["host", "alert-host", "alert-app"]
+  }
